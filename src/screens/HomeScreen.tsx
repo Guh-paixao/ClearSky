@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                         <View className="mt-6 flex-row justify-center items-center gap-8">
                             <TouchableOpacity activeOpacity={0.5} className="flex-row justify-center items-center bg-zinc-400 py-2 px-3 rounded-full gap-2 opacity-70">
                                 <Leaf color="#4ADE80" size={14} />
-                                <Text className="font-nunito_semi_bold text-green-400">IQA 21</Text>
+                                <Text className="font-nunito_semi_bold text-green-400">IQA 20</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.5} className="flex-row justify-center items-center bg-zinc-400 py-2 px-3 rounded-full gap-2 opacity-70">
                                 <Wind color="#67E8F9" size={16} />
