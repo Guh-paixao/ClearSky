@@ -22,7 +22,7 @@ export default function HorizontalScroll() {
                     <View className="justify-center items-center gap-2">
                         <Text className="text-slate-300 font-nunito_light">Wednesday</Text>
                         <View className="flex-col justify-center items-center bg-zinc-500 w-28 h-32 rounded-2xl opacity-70">
-                            <SunMedium color="#FFD700" size={32} />
+                            <SunMedium testID="Sun" color="#FFD700" size={32} />
                             <Text className="font-nunito_light text-yellow-300">Sunny</Text>
                             <Text className="font-nunito_light text-slate-300">30°</Text>
                         </View>

@@ -21,5 +21,8 @@ export default function currentWeather() {
         queryKey: ["currentWeather"],
     });
 
-    return query;
+    return {
+        ...query,
+        dataCurrent: query.data?.data,
+    }
 }

@@ -2,22 +2,62 @@ import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from 'expo-image';
-import { Bolt, CloudUpload, Leaf, Plus, Wind } from "lucide-react-native";
+import { Bolt, CloudDownload, Leaf, Plus, Wind } from "lucide-react-native";
 import LottieView from "lottie-react-native";
 import HorizontalScroll from "@/components/WeatherHorizontal";
 
-import BG from '@/assets/gifs/sun_tomorrow_lake.gif';
 import Sun from '@/assets/animations/sun.json';
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import currentWeather from "@/api/current";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+
+import nightAurora from "@/assets/gifs/night_aurora.gif";
+
 
 type HomeScreenProps = {
     navigation: NavigationProp<ParamListBase>;
 };
 
+type dateProps = {
+    day: string;
+    month: string;
+    year: string;
+}
+
+
 export default function HomeScreen({ navigation }: HomeScreenProps) {
-    const { data, isLoading, refetch, isRefetching } = currentWeather();
+    const { dataCurrent, isLoading, refetch, isRefetching } = currentWeather();
+    const [BG, setBG] = useState<ReactNode>();
+    const [updated, setUpdated] = useState<boolean>();
+    const [date, setDate] = useState<dateProps>();
+    const [localTime, setLocalTime] = useState<number>();
+
+    useEffect(() => {
+        setBackground();
+
+        setDate({
+            day: new Date().toLocaleDateString("en-US", { day: "numeric" }),
+            month: new Date().toLocaleDateString("en-US", { month: "short" }),
+            year: new Date().toLocaleDateString("en-US", { year: "numeric" }),
+        });
+
+        setLocalTime(new Date().getHours());
+
+        if (isRefetching) setUpdated(true);
+        setTimeout(() => setUpdated(false), 5000);
+    }, [isRefetching]);
+
+
+
+    function setBackground() {
+        if (!localTime) return;
+
+        if (localTime >= 18 && localTime <= 6) {
+            setBG(<Image source={nightAurora} autoplay contentFit="cover" style={{ position: "absolute", width: "100%", height: "100%", zIndex: -1, opacity: 0.6 }} />
+            );
+        }
+    }
+
 
 
     return (
@@ -35,8 +75,8 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                     <View className="flex-1 w-screen h-screen">
                         <View className="flex-row justify-between items-center m-6">
                             <View>
-                                <Text className="font-nunito_semi_bold text-lg text-slate-100">01, <Text className="font-nunito_light text-slate-300">Jun 2024</Text></Text>
-                                <Text className="font-nunito_semi_bold text-2xl text-slate-100">Castanhal, <Text className="font-nunito_light text-slate-300">Pará</Text></Text>
+                                <Text className="font-nunito_semi_bold text-lg text-slate-100">{date?.day}, <Text className="font-nunito_light text-slate-300">{date?.month} {date?.year}</Text></Text>
+                                <Text className="font-nunito_semi_bold text-2xl text-slate-100">{dataCurrent?.location.name}, <Text className="font-nunito_light text-slate-300">{dataCurrent?.location.region}</Text></Text>
                             </View>
                             <View className="flex-row gap-6 justify-center items-center">
                                 <TouchableOpacity onPress={() => navigation.navigate("SearchCity")}>
@@ -48,10 +88,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                             </View>
                         </View>
 
-                        <View className="flex-row justify-center items-center gap-2">
-                            <CloudUpload color="#A1A1AA" size={16} />
+                        {updated && <View className="flex-row justify-center items-center gap-2">
+                            <CloudDownload color="#A1A1AA" size={16} />
                             <Text className="font-nunito_light text-zinc-400 text-sm">Updated just now...</Text>
-                        </View>
+                        </View>}
 
                         <View className="items-center">
                             <LottieView
@@ -67,10 +107,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
                             <View className="items-center -mt-6">
                                 <View className="flex-row justify-center">
-                                    <Text className=" text-slate-50 font-light text-9xl">27</Text>
+                                    <Text className=" text-slate-50 font-light text-9xl">{dataCurrent?.current?.temp_c.toFixed(0)}</Text>
                                     <Text className=" text-slate-100 font-nunito_light text-4xl">°C</Text>
                                 </View>
-                                <Text className="text-orange-300 font-nunito_light text-2xl -mt-5">Sunny <Text className="font-nunito_regular">29°/31°</Text></Text>
+                                <Text className="text-orange-400 font-nunito_light text-2xl -mt-5">{dataCurrent?.current?.condition?.text}</Text>
                             </View>
 
                             <View className="mt-6 flex-row justify-center items-center gap-8">
@@ -90,7 +130,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
                 </ScrollView>
             </SafeAreaView>
-            <Image source={BG} autoplay contentFit="cover" style={{ position: "absolute", width: "100%", height: "100%", zIndex: -1, opacity: 0.8 }} />
+            {BG}
         </View>
     )
 }
