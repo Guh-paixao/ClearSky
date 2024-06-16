@@ -4,7 +4,7 @@ import { CloudLightning, CloudRain, CloudSun, Cloudy, SunMedium } from "lucide-r
 
 export default function HorizontalScroll() {
     return (
-        <View className="-mt-6">
+        <View className="mb-8">
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}

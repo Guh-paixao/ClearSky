@@ -7,7 +7,7 @@ async function getCurrentWeather(): AxiosPromise<currentWeatherType> {
     const response = await api.get<currentWeatherType>("/current.json", {
         params: {
             q: "Castanhal",
-            lang: "pt",
+            lang: "en",
             key: process.env.EXPO_PUBLIC_API_KEY,
             // aqi: "yes",
         },
