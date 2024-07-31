@@ -3,7 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { currentWeatherType } from "@/types/weatherTypes";
 import { AxiosPromise } from "axios";
 
-async function getCurrentWeather(): AxiosPromise<currentWeatherType> {
+type WeatherType = {
+    city: string;
+    lang: string;
+    AirQuality?: boolean;
+}
+
+async function getCurrentWeather({ city, lang, AirQuality }: WeatherType = { city: "Castanhal", lang: "en", AirQuality: false }): AxiosPromise<currentWeatherType> {
     const response = await api.get<currentWeatherType>("/current.json", {
         params: {
             q: "Castanhal",
@@ -15,10 +21,10 @@ async function getCurrentWeather(): AxiosPromise<currentWeatherType> {
     return response;
 }
 
-export default function currentWeather() {
+export default function currentWeather({ city, lang, AirQuality }: WeatherType = { city: "Castanhal", lang: "en", AirQuality: false }) {
     const query = useQuery({
-        queryFn: getCurrentWeather,
-        queryKey: ["currentWeather"],
+        queryFn: () => getCurrentWeather({ city, lang, AirQuality }),
+        queryKey: ["currentWeather", city, lang, AirQuality],
     });
 
     return {
